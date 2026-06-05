@@ -1,0 +1,1818 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="golden">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>$RAWDOG — Feed Raw. Live Strong.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet" />
+<style>
+/* ============================================================
+   $RAWDOG — pixel farm-sim styling
+   ============================================================ */
+
+/* ---- Theme variables (default: Golden Hour) ---- */
+:root {
+  --sky-top: #4a3a6b;
+  --sky-mid: #b8452e;
+  --sky-low: #e88a3c;
+  --sky-horizon: #f4c84a;
+  --sun: #ffe08a;
+  --sun-core: #fff3c4;
+  --mtn-far: #6a5a86;
+  --mtn-near: #4a3e63;
+  --tree-line: #2e3a2e;
+  --grass-far: #7e8a3e;
+  --grass-near: #5d7a34;
+  --grass-tile: #6c8438;
+  --road: #c9a26a;
+  --road-dark: #a87f48;
+  --road-line: #e6cf9a;
+  --pond: #6a9ec0;
+  --pond-dark: #4d7fa3;
+  --cloud: #f3d9b0;
+  --window-glow: transparent;
+  --star-op: 0;
+
+  /* UI woods + parchment (constant across themes) */
+  --ink: #2a1d12;
+  --ink-soft: #3e2c1b;
+  --wood: #7a5230;
+  --wood-light: #a06b38;
+  --wood-dark: #4a3018;
+  --parch: #f5e5d5;       /* exactly matches sprite bg */
+  --parch-light: #fbf1e0;
+  --parch-dark: #e7d2b6;
+  --gold: #e8b43d;
+  --gold-dark: #c8901f;
+  --red: #c0392b;
+  --green-ui: #6fa84a;
+}
+
+/* Meadow Day */
+[data-theme="meadow"] {
+  --sky-top: #6fb8e0;
+  --sky-mid: #9ed6ee;
+  --sky-low: #c8ecf6;
+  --sky-horizon: #e4f5e0;
+  --sun: #fff1a8;
+  --sun-core: #fffce0;
+  --mtn-far: #93a8c0;
+  --mtn-near: #6f86a6;
+  --tree-line: #355a3c;
+  --grass-far: #8cbf52;
+  --grass-near: #5fa040;
+  --grass-tile: #74b048;
+  --road: #d8b574;
+  --road-dark: #b48f50;
+  --road-line: #f0dca6;
+  --pond: #6fb6d8;
+  --pond-dark: #4e93bb;
+  --cloud: #ffffff;
+  --window-glow: transparent;
+  --star-op: 0;
+}
+
+/* Starlit Night */
+[data-theme="night"] {
+  --sky-top: #141a32;
+  --sky-mid: #23284a;
+  --sky-low: #353a5e;
+  --sky-horizon: #4a4a70;
+  --sun: #e8edff;
+  --sun-core: #ffffff;
+  --mtn-far: #2a3358;
+  --mtn-near: #1d2542;
+  --tree-line: #16201c;
+  --grass-far: #3a5238;
+  --grass-near: #2c4230;
+  --grass-tile: #344c34;
+  --road: #8a7a5a;
+  --road-dark: #6a5c40;
+  --road-line: #b0a078;
+  --pond: #34567a;
+  --pond-dark: #243d58;
+  --cloud: #3a4060;
+  --window-glow: #ffd36b;
+  --star-op: 1;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  background: #1c150e;
+  color: var(--ink);
+  font-family: 'VT323', monospace;
+  -webkit-font-smoothing: none;
+  font-smooth: never;
+  overflow-x: hidden;
+}
+
+img { image-rendering: pixelated; image-rendering: crisp-edges; }
+
+.font-display { font-family: 'Press Start 2P', monospace; }
+
+::selection { background: var(--gold); color: var(--ink); }
+
+/* ---- Pixel panel (RPG dialog box: double border) ---- */
+.panel {
+  background: var(--parch);
+  border: 4px solid var(--ink);
+  box-shadow:
+    inset 0 0 0 4px var(--parch),
+    inset 0 0 0 8px var(--wood-dark),
+    6px 6px 0 rgba(0,0,0,0.35);
+  image-rendering: pixelated;
+}
+
+/* ---- Pixel bevel button ---- */
+.btn {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--parch-light);
+  background: var(--wood);
+  border: 3px solid var(--ink);
+  padding: 14px 20px;
+  cursor: pointer;
+  position: relative;
+  box-shadow: inset 3px 3px 0 rgba(255,255,255,0.25), inset -4px -4px 0 rgba(0,0,0,0.35), 4px 4px 0 rgba(0,0,0,0.3);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  user-select: none;
+  transition: transform .05s steps(1);
+}
+.btn:hover { background: var(--wood-light); }
+.btn:active { transform: translate(2px,2px); box-shadow: inset 3px 3px 0 rgba(0,0,0,0.3), 0 0 0 rgba(0,0,0,0); }
+
+.btn-gold { background: var(--gold); color: var(--ink); }
+.btn-gold:hover { background: #f3c659; }
+.btn-green { background: var(--green-ui); color: #14210d; }
+.btn-green:hover { background: #82bd5b; }
+.btn-red { background: var(--red); }
+.btn-red:hover { background: #d4503f; }
+.btn-ghost { background: transparent; color: var(--ink); box-shadow: inset 0 0 0 3px var(--ink); border-color: transparent; }
+.btn-sm { font-size: 9px; padding: 9px 12px; }
+
+/* ============================================================
+   TOP NAV
+   ============================================================ */
+.shell { min-height: 100vh; display: flex; flex-direction: column; }
+
+.topbar {
+  position: sticky; top: 0; z-index: 40;
+  display: flex; align-items: center; gap: 18px;
+  padding: 10px 18px;
+  background: linear-gradient(#5a3a1f, #3a2412);
+  border-bottom: 4px solid var(--ink);
+  box-shadow: 0 4px 0 rgba(0,0,0,0.4);
+}
+.brand { display: flex; align-items: center; gap: 12px; }
+.brand-head {
+  width: 46px; height: 46px; object-fit: cover; object-position: top center;
+  border: 3px solid var(--ink); background: var(--parch);
+}
+.brand-name { font-family:'Press Start 2P'; color: var(--gold); font-size: 20px; text-shadow: 3px 3px 0 #000; letter-spacing: 1px; }
+.brand-name .x { color: var(--parch-light); }
+
+.nav { display: flex; gap: 8px; margin-left: 8px; }
+.nav-tab {
+  font-family:'Press Start 2P'; font-size: 11px; color: var(--parch-dark);
+  background: #4a2f18; border: 3px solid var(--ink); padding: 11px 14px;
+  cursor: pointer; letter-spacing: 1px; text-transform: uppercase;
+  box-shadow: inset -3px -3px 0 rgba(0,0,0,0.3);
+}
+.nav-tab:hover { color: var(--parch-light); background: #5e3d20; }
+.nav-tab.active { color: var(--ink); background: var(--gold); box-shadow: inset 3px 3px 0 rgba(255,255,255,0.3); }
+
+.topbar-spacer { flex: 1; }
+.topbar-right { display: flex; align-items: center; gap: 10px; }
+.x-link {
+  width: 44px; height: 44px; display: grid; place-items: center;
+  background: #14110c; border: 3px solid var(--ink); color: var(--parch-light);
+  box-shadow: inset -3px -3px 0 rgba(0,0,0,0.4);
+}
+.x-link:hover { background: #261d12; }
+.x-link svg { width: 20px; height: 20px; fill: currentColor; }
+
+.ticker-pill {
+  font-family:'VT323'; font-size: 18px; color: var(--gold);
+  background: #14110c; border: 3px solid var(--ink); padding: 3px 10px; display: flex; gap: 7px; align-items:center; white-space:nowrap;
+}
+.ticker-pill .dot { width: 9px; height: 9px; background: var(--green-ui); box-shadow: 0 0 8px var(--green-ui); animation: blink 1.4s steps(2) infinite; }
+@keyframes blink { 50% { opacity: .3; } }
+
+/* ============================================================
+   PAGE / CONTENT
+   ============================================================ */
+.page { flex: 1; }
+.map-wrap { width: 100%; display: flex; justify-content: center; background: #0e0a06; padding: 0; }
+.stage-scaler { width: 100%; overflow: hidden; }
+.stage {
+  position: relative; width: 1280px; height: 760px;
+  transform-origin: top left;
+  overflow: hidden;
+  border-bottom: 4px solid var(--ink);
+}
+
+/* ---- Sky ---- */
+.sky {
+  position: absolute; inset: 0 0 38% 0;
+  background: linear-gradient(var(--sky-top) 0%, var(--sky-mid) 48%, var(--sky-low) 80%, var(--sky-horizon) 100%);
+}
+.stars { position:absolute; inset:0 0 60% 0; opacity: var(--star-op); pointer-events:none; }
+.star { position:absolute; width:3px; height:3px; background:#fff; box-shadow:0 0 4px #fff; animation: twinkle 2.5s steps(2) infinite; }
+@keyframes twinkle { 50% { opacity:.25; } }
+
+.sun {
+  position: absolute; width: 92px; height: 92px; left: 50%; top: 16%; transform: translateX(-50%);
+  background: radial-gradient(var(--sun-core) 0 38%, var(--sun) 39% 70%, transparent 72%);
+  border-radius: 50%;
+  image-rendering: auto;
+  filter: drop-shadow(0 0 30px var(--sun));
+}
+[data-theme="golden"] .sun, :root .sun { top: 26%; }
+[data-theme="meadow"] .sun { top: 12%; left: 74%; }
+[data-theme="night"] .sun { top: 12%; left: 76%; width: 70px; height: 70px; filter: drop-shadow(0 0 18px #cdd6ff); }
+
+.cloud { position: absolute; background: var(--cloud); opacity:.85; image-rendering: pixelated;
+  box-shadow: 14px 0 0 var(--cloud), -14px 4px 0 var(--cloud), 28px 6px 0 var(--cloud), -28px 8px 0 var(--cloud); }
+@keyframes drift { from { transform: translateX(-60px); } to { transform: translateX(120px); } }
+
+.valley-headline { position:absolute; left:50%; top:7%; transform:translateX(-50%); z-index:4;
+  width:min(720px,86%); text-align:center; font-family:'Press Start 2P'; font-size:17px; line-height:1.7;
+  color:var(--parch-light); text-shadow: 3px 3px 0 var(--ink), -2px 0 0 var(--ink), 2px 0 0 var(--ink), 0 2px 0 var(--ink), 0 -2px 0 var(--ink); }
+.valley-headline b { color:var(--gold); }
+[data-theme="night"] .valley-headline { color:#eef1ff; }
+@keyframes bob { 50% { transform: translateY(-5px); } }
+
+/* ---- Mountains (stepped pixel silhouettes via clip-path) ---- */
+.mtns { position: absolute; left: 0; right: 0; height: 150px; bottom: calc(62% - 70px); }
+.mtn-layer { position:absolute; inset:0; }
+.mtn-far { background: var(--mtn-far);
+  clip-path: polygon(0 100%, 0 60%, 8% 40%, 16% 58%, 26% 28%, 36% 56%, 46% 34%, 56% 60%, 66% 30%, 76% 54%, 86% 36%, 94% 56%, 100% 44%, 100% 100%); opacity:.85; }
+.mtn-near { background: var(--mtn-near);
+  clip-path: polygon(0 100%, 0 78%, 12% 52%, 22% 74%, 34% 44%, 46% 72%, 58% 50%, 70% 76%, 82% 48%, 92% 70%, 100% 60%, 100% 100%); }
+
+/* ---- Pine treeline ---- */
+.treeline { position:absolute; left:0; right:0; bottom: 60%; height: 56px; display:flex; align-items:flex-end; overflow:hidden; }
+.pine { width: 30px; height: 0; margin: 0 -6px;
+  border-left: 15px solid transparent; border-right: 15px solid transparent; border-bottom: 46px solid var(--tree-line);
+  filter: drop-shadow(0 -10px 0 var(--tree-line)); flex: none; }
+
+/* ---- Farmland ---- */
+.field {
+  position: absolute; left:0; right:0; bottom:0; height: 62%;
+  background:
+    linear-gradient(var(--grass-far) 0%, var(--grass-near) 60%);
+}
+.field::before {
+  content:""; position:absolute; inset:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,0,0,0.05) 1px, transparent 1px);
+  background-size: 40px 28px, 40px 28px;
+  opacity:.6;
+}
+.field::after { /* horizon haze */
+  content:""; position:absolute; left:0; right:0; top:0; height:60px;
+  background: linear-gradient(var(--grass-far), transparent);
+}
+
+/* winding road svg sits over field */
+.road-svg { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
+
+/* foreground grass tufts */
+.fg-tufts { position:absolute; left:0; right:0; bottom:0; height:34px;
+  background: repeating-linear-gradient(90deg, var(--grass-near) 0 10px, var(--grass-tile) 10px 20px);
+  clip-path: polygon(0 40%,2% 10%,4% 40%,6% 5%,8% 40%,10% 12%,12% 40%,14% 6%,16% 40%,18% 10%,20% 40%,22% 5%,24% 40%,26% 12%,28% 40%,30% 6%,32% 40%,34% 10%,36% 40%,38% 5%,40% 40%,42% 12%,44% 40%,46% 6%,48% 40%,50% 10%,52% 40%,54% 5%,56% 40%,58% 12%,60% 40%,62% 6%,64% 40%,66% 10%,68% 40%,70% 5%,72% 40%,74% 12%,76% 40%,78% 6%,80% 40%,82% 10%,84% 40%,86% 5%,88% 40%,90% 12%,92% 40%,94% 6%,96% 40%,98% 10%,100% 40%,100% 100%,0 100%);
+}
+
+/* ============================================================
+   DECORATIONS
+   ============================================================ */
+.deco { position:absolute; }
+.tree { width: 54px; }
+.tree .trunk { width: 12px; height: 22px; background:#6b4423; border:3px solid var(--ink); margin: 0 auto; }
+.tree .crown { width: 54px; height: 46px; background: var(--tree-crown, #4a8a3a); border:3px solid var(--ink);
+  box-shadow: inset -5px -5px 0 rgba(0,0,0,0.25), inset 5px 5px 0 rgba(255,255,255,0.18);
+  clip-path: polygon(50% 0,72% 8%,90% 26%,100% 52%,88% 80%,64% 100%,36% 100%,12% 80%,0 52%,10% 26%,28% 8%);
+}
+.bush { width: 40px; height: 24px; background: var(--tree-crown,#4a8a3a); border:3px solid var(--ink);
+  clip-path: polygon(20% 100%,8% 60%,24% 36%,42% 50%,56% 26%,76% 44%,92% 60%,84% 100%); }
+
+.pond { background: var(--pond); border:3px solid var(--ink);
+  box-shadow: inset -6px -6px 0 var(--pond-dark), inset 5px 5px 0 rgba(255,255,255,0.25);
+  clip-path: polygon(18% 8%,52% 0,82% 12%,100% 42%,92% 74%,64% 100%,28% 96%,4% 66%,0 32%); }
+.pond .shine { position:absolute; width:26%; height:10%; background:rgba(255,255,255,.5); top:22%; left:24%; }
+
+.fence { display:flex; align-items:flex-end; height:30px; }
+.fence .post { width:8px; height:30px; background:var(--wood-light); border:2px solid var(--ink); margin-right:22px; position:relative; }
+.fence .post::after { content:""; position:absolute; top:6px; left:-22px; width:24px; height:6px; background:var(--wood); border:2px solid var(--ink); }
+
+.crops { display:grid; grid-auto-flow:column; gap:7px; padding:6px 8px; background:#6b4a2a; border:3px solid var(--ink);
+  box-shadow: inset 0 0 0 3px #7e5832; }
+.crops .row { width:10px; height:38px; background: repeating-linear-gradient(var(--crop,#3f8f3a) 0 6px, #2f6f2c 6px 9px); border:2px solid #14110c; }
+
+.hay { width:46px; height:34px; background: repeating-linear-gradient(#e2c46a 0 5px,#cda94e 5px 8px); border:3px solid var(--ink);
+  box-shadow: inset -5px -5px 0 rgba(0,0,0,0.2); }
+.hay::after{content:"";position:absolute;inset:8px 6px;border:2px dashed #9a7a30;opacity:.5;}
+
+.flower { width:10px; height:10px; background:var(--fc,#e85d75); border:2px solid var(--ink); box-shadow:0 8px 0 -2px #3f8f3a; }
+
+.signpost { display:flex; flex-direction:column; align-items:center; }
+.signpost .board { font-family:'Press Start 2P'; font-size:9px; color:var(--parch-light); background:var(--wood); border:3px solid var(--ink); padding:6px 8px; text-align:center; box-shadow: inset -3px -3px 0 rgba(0,0,0,.3), inset 3px 3px 0 rgba(255,255,255,.2); }
+.signpost .stick { width:8px; height:30px; background:var(--wood-dark); border:2px solid var(--ink); }
+
+/* welcome billboard (mascot portrait) */
+.billboard { position:absolute; width: 168px; filter: drop-shadow(5px 7px 0 rgba(0,0,0,0.32)); }
+.bb-header { font-family:'Press Start 2P'; font-size:11px; color:var(--parch-light); background:var(--wood);
+  border:4px solid var(--ink); border-bottom:none; padding:8px 6px; text-align:center; letter-spacing:1px;
+  box-shadow: inset 3px 3px 0 rgba(255,255,255,.22); }
+.bb-frame { position:relative; background:var(--parch); border:4px solid var(--ink); padding:5px;
+  box-shadow: inset 0 0 0 3px var(--wood-dark); }
+.bb-frame img { width:100%; display:block; image-rendering:pixelated; }
+.bb-plate { font-family:'VT323'; font-size:15px; color:var(--parch-light); background:#14110c; border:2px solid var(--ink);
+  text-align:center; padding:1px 4px; margin-top:5px; letter-spacing:.5px; }
+.bb-posts { display:flex; justify-content:space-between; padding:0 22px; margin-top:-2px; }
+.bb-posts span { width:11px; height:46px; background:var(--wood-dark); border:3px solid var(--ink); border-top:none;
+  box-shadow: inset -3px 0 0 rgba(0,0,0,.3); }
+.mascot-base { position:absolute; bottom:-6px; left:50%; transform:translateX(-50%); width:130px; height:16px; background:rgba(0,0,0,.26); border-radius:50%; filter:blur(2px); }
+
+/* ============================================================
+   STALL
+   ============================================================ */
+.stall { position:absolute; transform: translate(-50%,-100%); cursor:pointer; --awn:#e8b43d; --awn2:#caa72e; }
+.stall-inner { position:relative; transition: transform .08s steps(2); }
+.stall:hover .stall-inner { transform: translateY(-7px); }
+.stall:hover .stall-name { background: var(--gold); color: var(--ink); }
+.stall:hover .clickcue { opacity:1; transform: translate(-50%,0); }
+
+.awning { position:relative; width:128px; height:34px; margin:0 auto;
+  background: repeating-linear-gradient(90deg, var(--awn) 0 16px, var(--parch-light) 16px 32px);
+  border:3px solid var(--ink); border-bottom:none;
+  box-shadow: inset 0 4px 0 rgba(255,255,255,.25);
+}
+.awning .scallop { position:absolute; left:-3px; right:-3px; bottom:-12px; height:12px;
+  background: repeating-linear-gradient(90deg, var(--awn) 0 16px, var(--parch-light) 16px 32px);
+  clip-path: polygon(0 0,100% 0,100% 0,94% 100%,88% 0,81% 100%,75% 0,69% 100%,63% 0,56% 100%,50% 0,44% 100%,38% 0,31% 100%,25% 0,19% 100%,13% 0,6% 100%,0 0);
+  border-left:3px solid var(--ink); border-right:3px solid var(--ink);
+}
+.posts { position:relative; width:128px; height:78px; margin:0 auto; display:flex; justify-content:space-between; }
+.post-l, .post-r { width:9px; height:78px; background:var(--wood); border:3px solid var(--ink); box-shadow: inset -3px 0 0 rgba(0,0,0,.3); }
+.counter { position:absolute; left:-4px; right:-4px; bottom:0; height:30px; background:var(--wood-light); border:3px solid var(--ink);
+  box-shadow: inset 0 4px 0 rgba(255,255,255,.25), inset 0 -6px 0 rgba(0,0,0,.25); }
+.counter::after{content:"";position:absolute;left:6px;right:6px;top:9px;height:4px;background:var(--wood-dark);}
+
+/* product display board */
+.product-board { position:absolute; left:50%; top:6px; transform:translateX(-50%); width:74px; height:62px;
+  background: var(--parch); border:3px solid var(--ink); display:grid; place-items:center; overflow:hidden;
+  box-shadow: inset 0 0 0 2px var(--parch); }
+.product-board img { width:108%; height:108%; object-fit:contain; }
+[data-theme="night"] .product-board { box-shadow: inset 0 0 0 2px var(--parch), 0 0 14px var(--window-glow); }
+
+.stall-name { font-family:'Press Start 2P'; font-size:8px; color:var(--ink); background:var(--parch-light);
+  border:3px solid var(--ink); padding:6px 7px; text-align:center; white-space:nowrap; margin:8px auto 0; width:max-content;
+  box-shadow:3px 3px 0 rgba(0,0,0,.3); }
+.stall-price { font-family:'VT323'; font-size:17px; color:var(--gold); background:#14110c; border:2px solid var(--ink);
+  padding:1px 7px; width:max-content; margin:4px auto 0; }
+.stall-price b { color:var(--parch-light); }
+
+.clickcue { position:absolute; top:-26px; left:50%; transform:translate(-50%,6px); opacity:0; transition:.12s steps(2);
+  font-family:'Press Start 2P'; font-size:8px; color:var(--ink); background:var(--gold); border:2px solid var(--ink); padding:4px 6px; white-space:nowrap; }
+.clickcue::after{content:"";position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--ink);}
+
+.stall-base { position:absolute; bottom:-10px; left:50%; transform:translateX(-50%); width:120px; height:14px; background:rgba(0,0,0,.26); border-radius:50%; filter:blur(2px); }
+
+/* hint banner under map */
+.map-foot { display:flex; align-items:center; justify-content:center; gap:14px; flex-wrap:wrap; padding:14px;
+  background: linear-gradient(#3a2412,#2a1a0d); color:var(--parch-dark); font-size:19px; }
+.map-foot b { color: var(--gold); }
+.map-foot .coin { display:inline-block; width:16px; height:16px; background:var(--gold); border:2px solid var(--ink); border-radius:50%; vertical-align:-3px; }
+
+/* ============================================================
+   MODALS
+   ============================================================ */
+.overlay { position:fixed; inset:0; z-index:60; background:rgba(10,7,4,.72); display:grid; place-items:center; padding:20px;
+  animation: fade .15s steps(2); }
+@keyframes fade { from { opacity:0; } }
+.modal { width:min(520px,94vw); max-height:92vh; overflow:auto; position:relative; padding:22px; animation: pop .16s steps(3); }
+@keyframes pop { from { transform: translateY(14px) scale(.96); } }
+.modal-x { position:absolute; top:10px; right:10px; width:34px; height:34px; display:grid; place-items:center;
+  background:var(--red); color:#fff; border:3px solid var(--ink); font-family:'Press Start 2P'; font-size:11px; cursor:pointer;
+  box-shadow: inset -3px -3px 0 rgba(0,0,0,.35); }
+.modal-x:hover{ background:#d4503f; }
+
+.modal h2 { font-family:'Press Start 2P'; font-size:16px; color:var(--ink-soft); margin-bottom:4px; line-height:1.5; }
+.modal .sub { font-size:19px; color:var(--wood); margin-bottom:14px; }
+
+.product-hero { display:flex; gap:16px; align-items:center; margin-bottom:14px; }
+.product-hero .pic { width:120px; height:120px; flex:none; background:var(--parch); border:4px solid var(--ink); display:grid; place-items:center; overflow:hidden; box-shadow:inset 0 0 0 3px var(--parch-dark); }
+.product-hero .pic img { width:112%; height:112%; object-fit:contain; }
+.product-hero .meta { flex:1; min-width:150px; }
+.farm-photo { flex:none; width:120px; margin:0; }
+.farm-photo img { display:block; width:120px; height:96px; object-fit:cover; border:3px solid var(--ink);
+  box-shadow:3px 3px 0 rgba(0,0,0,.3); image-rendering:auto; }
+.farm-photo figcaption { font-family:'VT323'; font-size:15px; line-height:1.05; color:var(--wood); text-align:center;
+  margin-top:5px; }
+.tag { display:inline-block; font-family:'Press Start 2P'; font-size:8px; padding:5px 7px; border:2px solid var(--ink); background:var(--green-ui); color:#14210d; margin-bottom:8px; }
+.product-desc { font-size:19px; line-height:1.25; color:var(--ink-soft); }
+
+.price-row { display:flex; align-items:center; justify-content:space-between; gap:12px; margin:18px 0 16px; padding:12px 14px; background:var(--parch-light); border:3px solid var(--ink); }
+.price-row .lbl { font-family:'Press Start 2P'; font-size:9px; color:var(--wood); }
+.price-row .amt { font-family:'VT323'; font-size:24px; line-height:1; color:var(--ink); white-space:nowrap; text-align:right; }
+.price-row .amt b { color: var(--gold-dark); font-size:30px; }
+
+.stepper { display:flex; align-items:center; gap:0; border:3px solid var(--ink); background:var(--parch-light); width:max-content; }
+.stepper button { width:38px; height:38px; font-family:'Press Start 2P'; font-size:14px; background:var(--wood); color:var(--parch-light); border:none; border-right:3px solid var(--ink); cursor:pointer; }
+.stepper button:last-child{ border-right:none; border-left:3px solid var(--ink); }
+.stepper button:hover{ background:var(--wood-light); }
+.stepper .qty { width:54px; text-align:center; font-family:'VT323'; font-size:28px; }
+
+.total-row { display:flex; align-items:center; justify-content:space-between; margin:14px 0 18px; padding:14px; background:#14110c; border:3px solid var(--ink); }
+.total-row .lbl { font-family:'Press Start 2P'; font-size:11px; color:var(--parch-dark); }
+.total-row .val { font-family:'VT323'; font-size:28px; line-height:1; color:var(--gold); white-space:nowrap; }
+
+.btn-row { display:flex; gap:10px; }
+.btn-row .btn { flex:1; text-align:center; }
+
+/* steps indicator */
+.steps { display:flex; gap:6px; margin-bottom:16px; }
+.steps .s { flex:1; height:8px; background:var(--parch-dark); border:2px solid var(--ink); }
+.steps .s.on { background:var(--gold); }
+
+/* deposit box */
+.deposit { background:var(--parch-light); border:3px solid var(--ink); padding:14px; margin-bottom:14px; }
+.deposit .lbl { font-family:'Press Start 2P'; font-size:9px; color:var(--wood); margin-bottom:8px; display:block; }
+.addr-row { display:flex; gap:8px; }
+.addr { flex:1; font-family:'VT323'; font-size:21px; background:#14110c; color:var(--green-ui); border:3px solid var(--ink); padding:8px 10px; word-break:break-all; }
+.warn { font-size:18px; color:var(--red); margin-top:10px; line-height:1.2; }
+.warn b{ background:var(--gold); color:var(--ink); padding:0 4px; }
+
+/* form */
+.field-group { margin-bottom:13px; }
+.field-group label { font-family:'Press Start 2P'; font-size:9px; color:var(--ink-soft); display:block; margin-bottom:6px; }
+.field-group label .req { color:var(--red); }
+.input, .textarea, select.input {
+  width:100%; font-family:'VT323'; font-size:21px; color:var(--ink);
+  background:var(--parch-light); border:3px solid var(--ink); padding:9px 11px; outline:none;
+  box-shadow: inset 2px 2px 0 rgba(0,0,0,.12);
+}
+.input:focus, .textarea:focus, select.input:focus { background:#fff; box-shadow: inset 0 0 0 2px var(--gold); }
+.input.bad, .textarea.bad { box-shadow: inset 0 0 0 2px var(--red); background:#fbe7e3; }
+.textarea { resize:vertical; min-height:60px; }
+.err { font-size:16px; color:var(--red); margin-top:4px; }
+.two-col { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+
+.summary { background:var(--parch-light); border:3px solid var(--ink); padding:12px 14px; margin-bottom:14px; font-size:20px; }
+.summary .line { display:flex; justify-content:space-between; padding:4px 0; }
+.summary .line b { color:var(--gold-dark); }
+.summary .line.tot { border-top:2px dashed var(--wood); margin-top:6px; padding-top:8px; font-family:'Press Start 2P'; font-size:12px; }
+
+/* confirmation */
+.confirm { text-align:center; padding:8px 0; }
+.confirm .big { font-family:'Press Start 2P'; font-size:18px; color:var(--green-ui); margin:10px 0; text-shadow:2px 2px 0 #14210d; }
+.confirm .coinpop { font-size:54px; animation: bob 1.2s steps(2) infinite; }
+.confirm .order-id { font-family:'VT323'; font-size:22px; background:#14110c; color:var(--gold); border:3px solid var(--ink); padding:6px 12px; display:inline-block; margin:8px 0; }
+
+.copy-btn { font-family:'Press Start 2P'; font-size:9px; }
+
+/* toast */
+.toast { position:fixed; bottom:22px; left:50%; transform:translateX(-50%); z-index:80;
+  font-family:'Press Start 2P'; font-size:11px; color:var(--ink); background:var(--gold); border:3px solid var(--ink);
+  padding:12px 18px; box-shadow:4px 4px 0 rgba(0,0,0,.4); animation: pop .16s steps(3); }
+
+/* ============================================================
+   GALLERY
+   ============================================================ */
+.tab-page { max-width:1180px; margin:0 auto; padding:34px 20px 70px; }
+.tab-head { text-align:center; margin-bottom:28px; }
+.tab-head h1 { font-family:'Press Start 2P'; font-size:30px; color:var(--gold); text-shadow:4px 4px 0 #000; letter-spacing:1px; }
+.tab-head p { font-size:23px; color:var(--parch-dark); margin-top:12px; }
+
+.gallery-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:18px; }
+.frame { background:var(--parch); border:4px solid var(--ink); padding:10px; box-shadow:6px 6px 0 rgba(0,0,0,.4); transition:transform .08s steps(2); }
+.frame:hover { transform:translateY(-5px) rotate(-.4deg); }
+.frame .img { width:100%; aspect-ratio:1; background:#e7d2b6; border:3px solid var(--ink); overflow:hidden; display:grid; place-items:center; }
+.frame.wide .img { aspect-ratio:16/9; }
+.frame .img img { width:100%; height:100%; object-fit:cover; }
+.frame .cap { font-family:'Press Start 2P'; font-size:9px; color:var(--ink-soft); margin-top:10px; text-align:center; line-height:1.5; }
+
+.drop-slot { display:grid; place-items:center; text-align:center; gap:8px; aspect-ratio:1; background:
+  repeating-linear-gradient(45deg, #e7d2b6 0 10px, #ddc6a6 10px 20px); border:3px dashed var(--wood); color:var(--wood); }
+.drop-slot .mono { font-family:'VT323'; font-size:19px; }
+.drop-slot .plus { font-family:'Press Start 2P'; font-size:22px; }
+
+/* ============================================================
+   HOW TO BUY
+   ============================================================ */
+.quest-list { display:flex; flex-direction:column; gap:16px; max-width:760px; margin:0 auto; }
+.quest { display:flex; gap:16px; align-items:flex-start; padding:18px; }
+.quest .num { font-family:'Press Start 2P'; font-size:18px; color:var(--parch-light); background:var(--wood); border:3px solid var(--ink); width:54px; height:54px; flex:none; display:grid; place-items:center; box-shadow: inset -3px -3px 0 rgba(0,0,0,.3); }
+.quest .qbody h3 { font-family:'Press Start 2P'; font-size:13px; color:var(--ink-soft); margin-bottom:8px; }
+.quest .qbody p { font-size:20px; color:var(--wood); line-height:1.3; }
+.quest .qbody a { color:var(--gold-dark); text-decoration:underline; }
+
+.ca-box { max-width:760px; margin:26px auto 0; padding:20px; text-align:center; }
+.ca-box .lbl { font-family:'Press Start 2P'; font-size:11px; color:var(--wood); margin-bottom:12px; }
+.ca-box .ca { font-family:'VT323'; font-size:22px; background:#14110c; color:var(--green-ui); border:3px solid var(--ink); padding:10px 14px; word-break:break-all; margin-bottom:14px; }
+.ca-box .pump { display:inline-flex; gap:10px; align-items:center; }
+
+.stat-strip { max-width:760px; margin:26px auto 0; display:flex; gap:16px; flex-wrap:wrap; justify-content:center; }
+.stat { display:flex; align-items:center; gap:10px; font-family:'VT323'; font-size:21px; color:var(--parch-dark); }
+.stat .bar { display:flex; gap:3px; }
+.stat .bar i { width:13px; height:18px; border:2px solid var(--ink); background:#3a2a1c; }
+.stat .bar i.on-r{ background:var(--red);} .stat .bar i.on-g{ background:var(--gold);} .stat .bar i.on-h{ background:var(--green-ui);}
+.stat .heart{ color:var(--red); font-size:24px; }
+
+/* responsive nav */
+@media (max-width: 760px){
+  .brand-name{ font-size:15px; } .nav-tab{ font-size:9px; padding:9px 9px; }
+  .ticker-pill{ display:none; }
+  .tab-head h1{ font-size:20px; }
+}
+
+</style>
+<template id="__bundler_thumbnail">
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+<rect width="100" height="100" fill="#e88a3c" />
+<rect x="30" y="30" width="40" height="40" fill="#f5e5d5" stroke="#2a1d12" stroke-width="3" />
+<text x="50" y="58" font-family="monospace" font-size="22" font-weight="bold" fill="#2a1d12" text-anchor="middle">RD</text>
+</svg>
+</template>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel" data-from="tweaks-panel.jsx">
+// @ds-adherence-ignore -- omelette starter scaffold (raw elements/hex/px by design)
+
+/* BEGIN USAGE */
+// tweaks-panel.jsx
+// Reusable Tweaks shell + form-control helpers.
+// Exports (to window): useTweaks, TweaksPanel, TweakSection, TweakRow, TweakSlider,
+//   TweakToggle, TweakRadio, TweakSelect, TweakText, TweakNumber, TweakColor, TweakButton.
+//
+// Owns the host protocol (listens for __activate_edit_mode / __deactivate_edit_mode,
+// posts __edit_mode_available / __edit_mode_set_keys / __edit_mode_dismissed) so
+// individual prototypes don't re-roll it. Ships a consistent set of controls so you
+// don't hand-draw <input type="range">, segmented radios, steppers, etc.
+//
+// Usage (in an HTML file that loads React + Babel):
+//
+//   const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+//     "primaryColor": "#D97757",
+//     "palette": ["#D97757", "#29261b", "#f6f4ef"],
+//     "fontSize": 16,
+//     "density": "regular",
+//     "dark": false
+//   }/*EDITMODE-END*/;
+//
+//   function App() {
+//     const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
+//     return (
+//       <div style={{ fontSize: t.fontSize, color: t.primaryColor }}>
+//         Hello
+//         <TweaksPanel>
+//           <TweakSection label="Typography" />
+//           <TweakSlider label="Font size" value={t.fontSize} min={10} max={32} unit="px"
+//                        onChange={(v) => setTweak('fontSize', v)} />
+//           <TweakRadio  label="Density" value={t.density}
+//                        options={['compact', 'regular', 'comfy']}
+//                        onChange={(v) => setTweak('density', v)} />
+//           <TweakSection label="Theme" />
+//           <TweakColor  label="Primary" value={t.primaryColor}
+//                        options={['#D97757', '#2A6FDB', '#1F8A5B', '#7A5AE0']}
+//                        onChange={(v) => setTweak('primaryColor', v)} />
+//           <TweakColor  label="Palette" value={t.palette}
+//                        options={[['#D97757', '#29261b', '#f6f4ef'],
+//                                  ['#475569', '#0f172a', '#f1f5f9']]}
+//                        onChange={(v) => setTweak('palette', v)} />
+//           <TweakToggle label="Dark mode" value={t.dark}
+//                        onChange={(v) => setTweak('dark', v)} />
+//         </TweaksPanel>
+//       </div>
+//     );
+//   }
+//
+// TweakRadio is the segmented control for 2–3 short options (auto-falls-back to
+// TweakSelect past ~16/~10 chars per label); reach for TweakSelect directly when
+// options are many or long. For color tweaks always curate 3-4 options rather than
+// a free picker; an option can also be a whole 2–5 color palette (the stored value
+// is the array). The Tweak* controls are a floor, not a ceiling — build custom
+// controls inside the panel if a tweak calls for UI they don't cover.
+/* END USAGE */
+// ─────────────────────────────────────────────────────────────────────────────
+
+const __TWEAKS_STYLE = `
+  .twk-panel{position:fixed;right:16px;bottom:16px;z-index:2147483646;width:280px;
+    max-height:calc(100vh - 32px);display:flex;flex-direction:column;
+    transform:scale(var(--dc-inv-zoom,1));transform-origin:bottom right;
+    background:rgba(250,249,247,.78);color:#29261b;
+    -webkit-backdrop-filter:blur(24px) saturate(160%);backdrop-filter:blur(24px) saturate(160%);
+    border:.5px solid rgba(255,255,255,.6);border-radius:14px;
+    box-shadow:0 1px 0 rgba(255,255,255,.5) inset,0 12px 40px rgba(0,0,0,.18);
+    font:11.5px/1.4 ui-sans-serif,system-ui,-apple-system,sans-serif;overflow:hidden}
+  .twk-hd{display:flex;align-items:center;justify-content:space-between;
+    padding:10px 8px 10px 14px;cursor:move;user-select:none}
+  .twk-hd b{font-size:12px;font-weight:600;letter-spacing:.01em}
+  .twk-x{appearance:none;border:0;background:transparent;color:rgba(41,38,27,.55);
+    width:22px;height:22px;border-radius:6px;cursor:default;font-size:13px;line-height:1}
+  .twk-x:hover{background:rgba(0,0,0,.06);color:#29261b}
+  .twk-body{padding:2px 14px 14px;display:flex;flex-direction:column;gap:10px;
+    overflow-y:auto;overflow-x:hidden;min-height:0;
+    scrollbar-width:thin;scrollbar-color:rgba(0,0,0,.15) transparent}
+  .twk-body::-webkit-scrollbar{width:8px}
+  .twk-body::-webkit-scrollbar-track{background:transparent;margin:2px}
+  .twk-body::-webkit-scrollbar-thumb{background:rgba(0,0,0,.15);border-radius:4px;
+    border:2px solid transparent;background-clip:content-box}
+  .twk-body::-webkit-scrollbar-thumb:hover{background:rgba(0,0,0,.25);
+    border:2px solid transparent;background-clip:content-box}
+  .twk-row{display:flex;flex-direction:column;gap:5px}
+  .twk-row-h{flex-direction:row;align-items:center;justify-content:space-between;gap:10px}
+  .twk-lbl{display:flex;justify-content:space-between;align-items:baseline;
+    color:rgba(41,38,27,.72)}
+  .twk-lbl>span:first-child{font-weight:500}
+  .twk-val{color:rgba(41,38,27,.5);font-variant-numeric:tabular-nums}
+
+  .twk-sect{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+    color:rgba(41,38,27,.45);padding:10px 0 0}
+  .twk-sect:first-child{padding-top:0}
+
+  .twk-field{appearance:none;box-sizing:border-box;width:100%;min-width:0;height:26px;padding:0 8px;
+    border:.5px solid rgba(0,0,0,.1);border-radius:7px;
+    background:rgba(255,255,255,.6);color:inherit;font:inherit;outline:none}
+  .twk-field:focus{border-color:rgba(0,0,0,.25);background:rgba(255,255,255,.85)}
+  select.twk-field{padding-right:22px;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path fill='rgba(0,0,0,.5)' d='M0 0h10L5 6z'/></svg>");
+    background-repeat:no-repeat;background-position:right 8px center}
+
+  .twk-slider{appearance:none;-webkit-appearance:none;width:100%;height:4px;margin:6px 0;
+    border-radius:999px;background:rgba(0,0,0,.12);outline:none}
+  .twk-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;
+    width:14px;height:14px;border-radius:50%;background:#fff;
+    border:.5px solid rgba(0,0,0,.12);box-shadow:0 1px 3px rgba(0,0,0,.2);cursor:default}
+  .twk-slider::-moz-range-thumb{width:14px;height:14px;border-radius:50%;
+    background:#fff;border:.5px solid rgba(0,0,0,.12);box-shadow:0 1px 3px rgba(0,0,0,.2);cursor:default}
+
+  .twk-seg{position:relative;display:flex;padding:2px;border-radius:8px;
+    background:rgba(0,0,0,.06);user-select:none}
+  .twk-seg-thumb{position:absolute;top:2px;bottom:2px;border-radius:6px;
+    background:rgba(255,255,255,.9);box-shadow:0 1px 2px rgba(0,0,0,.12);
+    transition:left .15s cubic-bezier(.3,.7,.4,1),width .15s}
+  .twk-seg.dragging .twk-seg-thumb{transition:none}
+  .twk-seg button{appearance:none;position:relative;z-index:1;flex:1;border:0;
+    background:transparent;color:inherit;font:inherit;font-weight:500;min-height:22px;
+    border-radius:6px;cursor:default;padding:4px 6px;line-height:1.2;
+    overflow-wrap:anywhere}
+
+  .twk-toggle{position:relative;width:32px;height:18px;border:0;border-radius:999px;
+    background:rgba(0,0,0,.15);transition:background .15s;cursor:default;padding:0}
+  .twk-toggle[data-on="1"]{background:#34c759}
+  .twk-toggle i{position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;
+    background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.25);transition:transform .15s}
+  .twk-toggle[data-on="1"] i{transform:translateX(14px)}
+
+  .twk-num{display:flex;align-items:center;box-sizing:border-box;min-width:0;height:26px;padding:0 0 0 8px;
+    border:.5px solid rgba(0,0,0,.1);border-radius:7px;background:rgba(255,255,255,.6)}
+  .twk-num-lbl{font-weight:500;color:rgba(41,38,27,.6);cursor:ew-resize;
+    user-select:none;padding-right:8px}
+  .twk-num input{flex:1;min-width:0;height:100%;border:0;background:transparent;
+    font:inherit;font-variant-numeric:tabular-nums;text-align:right;padding:0 8px 0 0;
+    outline:none;color:inherit;-moz-appearance:textfield}
+  .twk-num input::-webkit-inner-spin-button,.twk-num input::-webkit-outer-spin-button{
+    -webkit-appearance:none;margin:0}
+  .twk-num-unit{padding-right:8px;color:rgba(41,38,27,.45)}
+
+  .twk-btn{appearance:none;height:26px;padding:0 12px;border:0;border-radius:7px;
+    background:rgba(0,0,0,.78);color:#fff;font:inherit;font-weight:500;cursor:default}
+  .twk-btn:hover{background:rgba(0,0,0,.88)}
+  .twk-btn.secondary{background:rgba(0,0,0,.06);color:inherit}
+  .twk-btn.secondary:hover{background:rgba(0,0,0,.1)}
+
+  .twk-swatch{appearance:none;-webkit-appearance:none;width:56px;height:22px;
+    border:.5px solid rgba(0,0,0,.1);border-radius:6px;padding:0;cursor:default;
+    background:transparent;flex-shrink:0}
+  .twk-swatch::-webkit-color-swatch-wrapper{padding:0}
+  .twk-swatch::-webkit-color-swatch{border:0;border-radius:5.5px}
+  .twk-swatch::-moz-color-swatch{border:0;border-radius:5.5px}
+
+  .twk-chips{display:flex;gap:6px}
+  .twk-chip{position:relative;appearance:none;flex:1;min-width:0;height:46px;
+    padding:0;border:0;border-radius:6px;overflow:hidden;cursor:default;
+    box-shadow:0 0 0 .5px rgba(0,0,0,.12),0 1px 2px rgba(0,0,0,.06);
+    transition:transform .12s cubic-bezier(.3,.7,.4,1),box-shadow .12s}
+  .twk-chip:hover{transform:translateY(-1px);
+    box-shadow:0 0 0 .5px rgba(0,0,0,.18),0 4px 10px rgba(0,0,0,.12)}
+  .twk-chip[data-on="1"]{box-shadow:0 0 0 1.5px rgba(0,0,0,.85),
+    0 2px 6px rgba(0,0,0,.15)}
+  .twk-chip>span{position:absolute;top:0;bottom:0;right:0;width:34%;
+    display:flex;flex-direction:column;box-shadow:-1px 0 0 rgba(0,0,0,.1)}
+  .twk-chip>span>i{flex:1;box-shadow:0 -1px 0 rgba(0,0,0,.1)}
+  .twk-chip>span>i:first-child{box-shadow:none}
+  .twk-chip svg{position:absolute;top:6px;left:6px;width:13px;height:13px;
+    filter:drop-shadow(0 1px 1px rgba(0,0,0,.3))}
+`;
+
+// ── useTweaks ───────────────────────────────────────────────────────────────
+// Single source of truth for tweak values. setTweak persists via the host
+// (__edit_mode_set_keys → host rewrites the EDITMODE block on disk).
+function useTweaks(defaults) {
+  const [values, setValues] = React.useState(defaults);
+  // Accepts either setTweak('key', value) or setTweak({ key: value, ... }) so a
+  // useState-style call doesn't write a "[object Object]" key into the persisted
+  // JSON block.
+  const setTweak = React.useCallback((keyOrEdits, val) => {
+    const edits = typeof keyOrEdits === 'object' && keyOrEdits !== null
+      ? keyOrEdits : { [keyOrEdits]: val };
+    setValues((prev) => ({ ...prev, ...edits }));
+    window.parent.postMessage({ type: '__edit_mode_set_keys', edits }, '*');
+    // Same-window signal so in-page listeners (deck-stage rail thumbnails)
+    // can react — the parent message only reaches the host, not peers.
+    window.dispatchEvent(new CustomEvent('tweakchange', { detail: edits }));
+  }, []);
+  return [values, setTweak];
+}
+
+// ── TweaksPanel ─────────────────────────────────────────────────────────────
+// Floating shell. Registers the protocol listener BEFORE announcing
+// availability — if the announce ran first, the host's activate could land
+// before our handler exists and the toolbar toggle would silently no-op.
+// The close button posts __edit_mode_dismissed so the host's toolbar toggle
+// flips off in lockstep; the host echoes __deactivate_edit_mode back which
+// is what actually hides the panel.
+function TweaksPanel({ title = 'Tweaks', children }) {
+  const [open, setOpen] = React.useState(false);
+  const dragRef = React.useRef(null);
+  const offsetRef = React.useRef({ x: 16, y: 16 });
+  const PAD = 16;
+
+  const clampToViewport = React.useCallback(() => {
+    const panel = dragRef.current;
+    if (!panel) return;
+    const w = panel.offsetWidth, h = panel.offsetHeight;
+    const maxRight = Math.max(PAD, window.innerWidth - w - PAD);
+    const maxBottom = Math.max(PAD, window.innerHeight - h - PAD);
+    offsetRef.current = {
+      x: Math.min(maxRight, Math.max(PAD, offsetRef.current.x)),
+      y: Math.min(maxBottom, Math.max(PAD, offsetRef.current.y)),
+    };
+    panel.style.right = offsetRef.current.x + 'px';
+    panel.style.bottom = offsetRef.current.y + 'px';
+  }, []);
+
+  React.useEffect(() => {
+    if (!open) return;
+    clampToViewport();
+    if (typeof ResizeObserver === 'undefined') {
+      window.addEventListener('resize', clampToViewport);
+      return () => window.removeEventListener('resize', clampToViewport);
+    }
+    const ro = new ResizeObserver(clampToViewport);
+    ro.observe(document.documentElement);
+    return () => ro.disconnect();
+  }, [open, clampToViewport]);
+
+  React.useEffect(() => {
+    const onMsg = (e) => {
+      const t = e?.data?.type;
+      if (t === '__activate_edit_mode') setOpen(true);
+      else if (t === '__deactivate_edit_mode') setOpen(false);
+    };
+    window.addEventListener('message', onMsg);
+    window.parent.postMessage({ type: '__edit_mode_available' }, '*');
+    return () => window.removeEventListener('message', onMsg);
+  }, []);
+
+  const dismiss = () => {
+    setOpen(false);
+    window.parent.postMessage({ type: '__edit_mode_dismissed' }, '*');
+  };
+
+  const onDragStart = (e) => {
+    const panel = dragRef.current;
+    if (!panel) return;
+    const r = panel.getBoundingClientRect();
+    const sx = e.clientX, sy = e.clientY;
+    const startRight = window.innerWidth - r.right;
+    const startBottom = window.innerHeight - r.bottom;
+    const move = (ev) => {
+      offsetRef.current = {
+        x: startRight - (ev.clientX - sx),
+        y: startBottom - (ev.clientY - sy),
+      };
+      clampToViewport();
+    };
+    const up = () => {
+      window.removeEventListener('mousemove', move);
+      window.removeEventListener('mouseup', up);
+    };
+    window.addEventListener('mousemove', move);
+    window.addEventListener('mouseup', up);
+  };
+
+  if (!open) return null;
+  return (
+    <>
+      <style>{__TWEAKS_STYLE}</style>
+      <div ref={dragRef} className="twk-panel" data-omelette-chrome=""
+           style={{ right: offsetRef.current.x, bottom: offsetRef.current.y }}>
+        <div className="twk-hd" onMouseDown={onDragStart}>
+          <b>{title}</b>
+          <button className="twk-x" aria-label="Close tweaks"
+                  onMouseDown={(e) => e.stopPropagation()}
+                  onClick={dismiss}>✕</button>
+        </div>
+        <div className="twk-body">
+          {children}
+        </div>
+      </div>
+    </>
+  );
+}
+
+// ── Layout helpers ──────────────────────────────────────────────────────────
+
+function TweakSection({ label, children }) {
+  return (
+    <>
+      <div className="twk-sect">{label}</div>
+      {children}
+    </>
+  );
+}
+
+function TweakRow({ label, value, children, inline = false }) {
+  return (
+    <div className={inline ? 'twk-row twk-row-h' : 'twk-row'}>
+      <div className="twk-lbl">
+        <span>{label}</span>
+        {value != null && <span className="twk-val">{value}</span>}
+      </div>
+      {children}
+    </div>
+  );
+}
+
+// ── Controls ────────────────────────────────────────────────────────────────
+
+function TweakSlider({ label, value, min = 0, max = 100, step = 1, unit = '', onChange }) {
+  return (
+    <TweakRow label={label} value={`${value}${unit}`}>
+      <input type="range" className="twk-slider" min={min} max={max} step={step}
+             value={value} onChange={(e) => onChange(Number(e.target.value))} />
+    </TweakRow>
+  );
+}
+
+function TweakToggle({ label, value, onChange }) {
+  return (
+    <div className="twk-row twk-row-h">
+      <div className="twk-lbl"><span>{label}</span></div>
+      <button type="button" className="twk-toggle" data-on={value ? '1' : '0'}
+              role="switch" aria-checked={!!value}
+              onClick={() => onChange(!value)}><i /></button>
+    </div>
+  );
+}
+
+function TweakRadio({ label, value, options, onChange }) {
+  const trackRef = React.useRef(null);
+  const [dragging, setDragging] = React.useState(false);
+  // The active value is read by pointer-move handlers attached for the lifetime
+  // of a drag — ref it so a stale closure doesn't fire onChange for every move.
+  const valueRef = React.useRef(value);
+  valueRef.current = value;
+
+  // Segments wrap mid-word once per-segment width runs out. The track is
+  // ~248px (280 panel − 28 body pad − 4 seg pad), each button loses 12px
+  // to its own padding, and 11.5px system-ui averages ~6.3px/char — so 2
+  // options fit ~16 chars each, 3 fit ~10. Past that (or >3 options), fall
+  // back to a dropdown rather than wrap.
+  const labelLen = (o) => String(typeof o === 'object' ? o.label : o).length;
+  const maxLen = options.reduce((m, o) => Math.max(m, labelLen(o)), 0);
+  const fitsAsSegments = maxLen <= ({ 2: 16, 3: 10 }[options.length] ?? 0);
+  if (!fitsAsSegments) {
+    // <select> emits strings — map back to the original option value so the
+    // fallback stays type-preserving (numbers, booleans) like the segment path.
+    const resolve = (s) => {
+      const m = options.find((o) => String(typeof o === 'object' ? o.value : o) === s);
+      return m === undefined ? s : typeof m === 'object' ? m.value : m;
+    };
+    return <TweakSelect label={label} value={value} options={options}
+                        onChange={(s) => onChange(resolve(s))} />;
+  }
+  const opts = options.map((o) => (typeof o === 'object' ? o : { value: o, label: o }));
+  const idx = Math.max(0, opts.findIndex((o) => o.value === value));
+  const n = opts.length;
+
+  const segAt = (clientX) => {
+    const r = trackRef.current.getBoundingClientRect();
+    const inner = r.width - 4;
+    const i = Math.floor(((clientX - r.left - 2) / inner) * n);
+    return opts[Math.max(0, Math.min(n - 1, i))].value;
+  };
+
+  const onPointerDown = (e) => {
+    setDragging(true);
+    const v0 = segAt(e.clientX);
+    if (v0 !== valueRef.current) onChange(v0);
+    const move = (ev) => {
+      if (!trackRef.current) return;
+      const v = segAt(ev.clientX);
+      if (v !== valueRef.current) onChange(v);
+    };
+    const up = () => {
+      setDragging(false);
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', up);
+    };
+    window.addEventListener('pointermove', move);
+    window.addEventListener('pointerup', up);
+  };
+
+  return (
+    <TweakRow label={label}>
+      <div ref={trackRef} role="radiogroup" onPointerDown={onPointerDown}
+           className={dragging ? 'twk-seg dragging' : 'twk-seg'}>
+        <div className="twk-seg-thumb"
+             style={{ left: `calc(2px + ${idx} * (100% - 4px) / ${n})`,
+                      width: `calc((100% - 4px) / ${n})` }} />
+        {opts.map((o) => (
+          <button key={o.value} type="button" role="radio" aria-checked={o.value === value}>
+            {o.label}
+          </button>
+        ))}
+      </div>
+    </TweakRow>
+  );
+}
+
+function TweakSelect({ label, value, options, onChange }) {
+  return (
+    <TweakRow label={label}>
+      <select className="twk-field" value={value} onChange={(e) => onChange(e.target.value)}>
+        {options.map((o) => {
+          const v = typeof o === 'object' ? o.value : o;
+          const l = typeof o === 'object' ? o.label : o;
+          return <option key={v} value={v}>{l}</option>;
+        })}
+      </select>
+    </TweakRow>
+  );
+}
+
+function TweakText({ label, value, placeholder, onChange }) {
+  return (
+    <TweakRow label={label}>
+      <input className="twk-field" type="text" value={value} placeholder={placeholder}
+             onChange={(e) => onChange(e.target.value)} />
+    </TweakRow>
+  );
+}
+
+function TweakNumber({ label, value, min, max, step = 1, unit = '', onChange }) {
+  const clamp = (n) => {
+    if (min != null && n < min) return min;
+    if (max != null && n > max) return max;
+    return n;
+  };
+  const startRef = React.useRef({ x: 0, val: 0 });
+  const onScrubStart = (e) => {
+    e.preventDefault();
+    startRef.current = { x: e.clientX, val: value };
+    const decimals = (String(step).split('.')[1] || '').length;
+    const move = (ev) => {
+      const dx = ev.clientX - startRef.current.x;
+      const raw = startRef.current.val + dx * step;
+      const snapped = Math.round(raw / step) * step;
+      onChange(clamp(Number(snapped.toFixed(decimals))));
+    };
+    const up = () => {
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', up);
+    };
+    window.addEventListener('pointermove', move);
+    window.addEventListener('pointerup', up);
+  };
+  return (
+    <div className="twk-num">
+      <span className="twk-num-lbl" onPointerDown={onScrubStart}>{label}</span>
+      <input type="number" value={value} min={min} max={max} step={step}
+             onChange={(e) => onChange(clamp(Number(e.target.value)))} />
+      {unit && <span className="twk-num-unit">{unit}</span>}
+    </div>
+  );
+}
+
+// Relative-luminance contrast pick — checkmarks drawn over a swatch need to
+// read on both #111 and #fafafa without per-option configuration. Hex input
+// only (#rgb / #rrggbb); named or rgb()/hsl() colors fall through to "light".
+function __twkIsLight(hex) {
+  const h = String(hex).replace('#', '');
+  const x = h.length === 3 ? h.replace(/./g, (c) => c + c) : h.padEnd(6, '0');
+  const n = parseInt(x.slice(0, 6), 16);
+  if (Number.isNaN(n)) return true;
+  const r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
+  return r * 299 + g * 587 + b * 114 > 148000;
+}
+
+const __TwkCheck = ({ light }) => (
+  <svg viewBox="0 0 14 14" aria-hidden="true">
+    <path d="M3 7.2 5.8 10 11 4.2" fill="none" strokeWidth="2.2"
+          strokeLinecap="round" strokeLinejoin="round"
+          stroke={light ? 'rgba(0,0,0,.78)' : '#fff'} />
+  </svg>
+);
+
+// TweakColor — curated color/palette picker. Each option is either a single
+// hex string or an array of 1-5 hex strings; the card adapts — a lone color
+// renders solid, a palette renders colors[0] as the hero (left ~2/3) with the
+// rest stacked in a sharp column on the right. onChange emits the
+// option in the shape it was passed (string stays string, array stays array).
+// Without options it falls back to the native color input for back-compat.
+function TweakColor({ label, value, options, onChange }) {
+  if (!options || !options.length) {
+    return (
+      <div className="twk-row twk-row-h">
+        <div className="twk-lbl"><span>{label}</span></div>
+        <input type="color" className="twk-swatch" value={value}
+               onChange={(e) => onChange(e.target.value)} />
+      </div>
+    );
+  }
+  // Native <input type=color> emits lowercase hex per the HTML spec, so
+  // compare case-insensitively. String() guards JSON.stringify(undefined),
+  // which returns the primitive undefined (no .toLowerCase).
+  const key = (o) => String(JSON.stringify(o)).toLowerCase();
+  const cur = key(value);
+  return (
+    <TweakRow label={label}>
+      <div className="twk-chips" role="radiogroup">
+        {options.map((o, i) => {
+          const colors = Array.isArray(o) ? o : [o];
+          const [hero, ...rest] = colors;
+          const sup = rest.slice(0, 4);
+          const on = key(o) === cur;
+          return (
+            <button key={i} type="button" className="twk-chip" role="radio"
+                    aria-checked={on} data-on={on ? '1' : '0'}
+                    aria-label={colors.join(', ')} title={colors.join(' · ')}
+                    style={{ background: hero }}
+                    onClick={() => onChange(o)}>
+              {sup.length > 0 && (
+                <span>
+                  {sup.map((c, j) => <i key={j} style={{ background: c }} />)}
+                </span>
+              )}
+              {on && <__TwkCheck light={__twkIsLight(hero)} />}
+            </button>
+          );
+        })}
+      </div>
+    </TweakRow>
+  );
+}
+
+function TweakButton({ label, onClick, secondary = false }) {
+  return (
+    <button type="button" className={secondary ? 'twk-btn secondary' : 'twk-btn'}
+            onClick={onClick}>{label}</button>
+  );
+}
+
+Object.assign(window, {
+  useTweaks, TweaksPanel, TweakSection, TweakRow,
+  TweakSlider, TweakToggle, TweakRadio, TweakSelect,
+  TweakText, TweakNumber, TweakColor, TweakButton,
+});
+
+</script>
+<script type="text/babel" data-from="data.jsx">
+/* global window */
+// ---- $RAWDOG farm + product data ----
+const FARMS = [
+  {
+    id: 'honey',
+    farm: 'Honey Hollow',
+    keeper: 'Bea & the Hive Co.',
+    product: 'Raw Honey',
+    unit: 'jar (16oz)',
+    price: 200000,
+    sprite: 'assets/sprites/honey.png',
+    photo: 'assets/farms/honey.webp',
+    location: 'Heritage Bee Farm, Florida',
+    awn: '#e8b43d', awn2: '#caa72e',
+    tag: 'UNFILTERED',
+    desc: 'Cold-pressed wildflower honey straight from the hive. Never heated, never strained. Pure liquid gold.',
+    // map placement (% of stage)
+    x: 16, y: 74, scale: 1,
+  },
+  {
+    id: 'steak',
+    farm: 'Ironhide Ranch',
+    keeper: 'Buck Tallow',
+    product: 'Raw Ribeye',
+    unit: 'lb, dry-aged',
+    price: 400000,
+    sprite: 'assets/sprites/steak.png',
+    photo: 'assets/farms/beef.webp',
+    location: 'Dirty Dog Farm, New York State',
+    awn: '#c0392b', awn2: '#9c2c20',
+    tag: 'GRASS-FED',
+    desc: 'Pasture-raised, dry-aged ribeye from cattle that never saw a feedlot. Marbled, mineral-rich, raw-dog approved.',
+    x: 84, y: 74, scale: 1.05,
+  },
+  {
+    id: 'liver',
+    farm: 'Offal Acres',
+    keeper: 'Nana Gizzard',
+    product: 'Raw Liver',
+    unit: '8oz pack',
+    price: 350000,
+    sprite: 'assets/sprites/liver.png',
+    photo: 'assets/farms/liver.jpg',
+    location: 'White Oak Pastures, Georgia',
+    awn: '#7a2b3a', awn2: '#5e2029',
+    tag: 'NATURES MULTIVITAMIN',
+    desc: 'Nutrient-dense beef liver — packed with retinol, B12 and copper. The original superfood. Eat it raw, live forever.',
+    x: 70, y: 55, scale: 0.86,
+  },
+  {
+    id: 'milk',
+    farm: 'Dewdrop Dairy',
+    keeper: 'Clover McMoo',
+    product: 'Raw Milk',
+    unit: 'half-gallon',
+    price: 250000,
+    sprite: 'assets/sprites/milk.png',
+    photo: 'assets/farms/milk.jpg',
+    location: "Miller's Bio Farm, Pennsylvania",
+    awn: '#cfe1ec', awn2: '#9cc0d4',
+    tag: 'A2 / UNPASTEURIZED',
+    desc: 'Creamline raw milk from a single small herd. Living enzymes, real cream on top. Shake before you chug.',
+    x: 30, y: 55, scale: 0.84,
+  },
+  {
+    id: 'eggs',
+    farm: 'Sunny Coop',
+    keeper: 'Henrietta',
+    product: 'Raw Eggs',
+    unit: 'dozen',
+    price: 150000,
+    sprite: null, // drawn as pixel sprite
+    photo: 'assets/farms/eggs.jpg',
+    location: 'Fresh From The Farm, Canada',
+    awn: '#8bbf5a', awn2: '#6fa244',
+    tag: 'YOLKS OF GOLD',
+    desc: 'Deep-orange yolks from hens that roam free and eat bugs all day. Crack one raw into your shake like a champion.',
+    x: 50, y: 93, scale: 1,
+  },
+];
+
+const DEPOSIT_WALLET = 'RAWdoGwa11etADDRESScomiNGsoon000000000000';
+const CONTRACT_ADDR = 'COMING SOON · PUMP.FUN LAUNCH';
+const PUMP_URL = '#';
+const X_URL = 'https://x.com/RawDogFun';
+
+// Format token amounts as meme-coin shorthand: 120000 -> "120k", 1200000 -> "1.2m"
+function fmt(n) {
+  if (n >= 1e6) { const v = n / 1e6; return (Number.isInteger(v) ? v : v.toFixed(1).replace(/\.0$/, '')) + 'm'; }
+  if (n >= 1e3) { const v = n / 1e3; return (Number.isInteger(v) ? v : v.toFixed(1).replace(/\.0$/, '')) + 'k'; }
+  return n.toLocaleString();
+}
+
+window.RAWDOG_DATA = { FARMS, DEPOSIT_WALLET, CONTRACT_ADDR, PUMP_URL, X_URL, fmt };
+
+</script>
+<script type="text/babel" data-from="scene.jsx">
+/* global React, window */
+const { useRef, useEffect, useState } = React;
+
+// ---------- Pixel egg sprite (eggs have no photo asset) ----------
+function EggSprite() {
+  return (
+    <div style={{ position: 'relative', width: 72, height: 58 }}>
+      {/* nest */}
+      <div style={{ position: 'absolute', left: 6, bottom: 2, width: 60, height: 22,
+        background: 'repeating-linear-gradient(90deg,#a9772f 0 4px,#8a5f22 4px 7px)',
+        border: '3px solid #2a1d12', borderRadius: '0 0 40% 40%' }} />
+      {/* egg 1 */}
+      <div style={{ position: 'absolute', left: 12, bottom: 12, width: 26, height: 34,
+        background: 'radial-gradient(circle at 35% 30%, #fffdf6 0 40%, #f0e3c8 60%, #ddc9a4 100%)',
+        border: '3px solid #2a1d12', borderRadius: '50% 50% 50% 50% / 60% 60% 40% 40%' }} />
+      {/* egg 2 */}
+      <div style={{ position: 'absolute', left: 32, bottom: 10, width: 28, height: 37,
+        background: 'radial-gradient(circle at 35% 28%, #fffdf6 0 40%, #efe1c4 60%, #d6c099 100%)',
+        border: '3px solid #2a1d12', borderRadius: '50% 50% 50% 50% / 60% 60% 40% 40%' }} />
+      {/* speck */}
+      <div style={{ position: 'absolute', left: 40, bottom: 26, width: 4, height: 4, background: '#b98a4a' }} />
+    </div>
+  );
+}
+
+function ProductArt({ farm, big }) {
+  if (farm.id === 'eggs') {
+    return (
+      <div style={{ transform: big ? 'scale(1.55)' : 'scale(0.9)' }}>
+        <EggSprite />
+      </div>
+    );
+  }
+  return <img src={farm.sprite} alt={farm.product} />;
+}
+
+// ---------- Decorations ----------
+function Tree({ x, y, s = 1, crown = '#4a8a3a' }) {
+  return (
+    <div className="deco tree" style={{ left: x + '%', top: y + '%', transform: `scale(${s})`, '--tree-crown': crown }}>
+      <div className="crown" />
+      <div className="trunk" />
+    </div>
+  );
+}
+function Pine({ x, y, s = 1 }) {
+  return (
+    <div className="deco" style={{ left: x + '%', top: y + '%', transform: `scale(${s})` }}>
+      <div style={{ width: 0, height: 0, borderLeft: '17px solid transparent', borderRight: '17px solid transparent', borderBottom: '30px solid #2e4a30', margin: '0 auto' }} />
+      <div style={{ width: 0, height: 0, borderLeft: '22px solid transparent', borderRight: '22px solid transparent', borderBottom: '34px solid #355a3a', marginTop: -14 }} />
+      <div style={{ width: 10, height: 12, background: '#5a3a1f', border: '2px solid #2a1d12', margin: '-2px auto 0' }} />
+    </div>
+  );
+}
+function Pond({ x, y, w = 130, h = 80 }) {
+  return (
+    <div className="deco pond" style={{ left: x + '%', top: y + '%', width: w, height: h }}>
+      <div className="shine" />
+    </div>
+  );
+}
+function Fence({ x, y, posts = 4, s = 1 }) {
+  return (
+    <div className="deco fence" style={{ left: x + '%', top: y + '%', transform: `scale(${s})` }}>
+      {Array.from({ length: posts }).map((_, i) => <div className="post" key={i} />)}
+    </div>
+  );
+}
+function Crops({ x, y, rows = 5, color = '#3f8f3a' }) {
+  return (
+    <div className="deco crops" style={{ left: x + '%', top: y + '%', '--crop': color }}>
+      {Array.from({ length: rows }).map((_, i) => <div className="row" key={i} />)}
+    </div>
+  );
+}
+function Hay({ x, y }) { return <div className="deco hay" style={{ left: x + '%', top: y + '%' }} />; }
+function Flower({ x, y, c }) { return <div className="deco flower" style={{ left: x + '%', top: y + '%', '--fc': c }} />; }
+function Bush({ x, y, crown = '#3f8f3a' }) { return <div className="deco bush" style={{ left: x + '%', top: y + '%', '--tree-crown': crown }} />; }
+
+// ---------- Stall ----------
+function Stall({ farm, onOpen }) {
+  return (
+    <div className="stall" style={{ left: farm.x + '%', top: farm.y + '%', transform: `translate(-50%,-100%) scale(${farm.scale})` }}
+      onClick={() => onOpen(farm)} role="button" tabIndex={0}
+      onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && onOpen(farm)}>
+      <div className="clickcue">CLICK TO TRADE</div>
+      <div className="stall-inner" style={{ '--awn': farm.awn, '--awn2': farm.awn2 }}>
+        <div className="stall-name">{farm.product}</div>
+        <div className="stall-price">{window.RAWDOG_DATA.fmt(farm.price)} <b>$RAWDOG</b></div>
+        <div className="awning"><div className="scallop" /></div>
+        <div className="posts">
+          <div className="post-l" />
+          <div className="product-board"><ProductArt farm={farm} /></div>
+          <div className="post-r" />
+          <div className="counter" />
+        </div>
+      </div>
+      <div className="stall-base" />
+    </div>
+  );
+}
+
+// ---------- Welcome billboard (mascot portrait on a park board) ----------
+function Billboard() {
+  return (
+    <div className="billboard" style={{ left: '50%', top: '33%', transform: 'translate(-50%,0)' }}>
+      <div className="bb-header">RAWDOG VALLEY</div>
+      <div className="bb-frame">
+        <img src="assets/mascot.png" alt="RAWDOG mascot" />
+        <div className="bb-plate">EST. RAW · POP. 1 GOOD BOY</div>
+      </div>
+      <div className="bb-posts"><span /><span /></div>
+      <div className="mascot-base" />
+    </div>
+  );
+}
+
+// ---------- Road ----------
+function Road() {
+  return (
+    <svg className="road-svg" viewBox="0 0 1280 760" preserveAspectRatio="none">
+      <path d="M620 760 C 600 660, 760 640, 770 560 C 778 500, 470 500, 460 430 C 452 380, 690 372, 700 320 C 706 300, 660 295, 640 290"
+        fill="none" stroke="var(--road-dark)" strokeWidth="58" strokeLinecap="round" />
+      <path d="M620 760 C 600 660, 760 640, 770 560 C 778 500, 470 500, 460 430 C 452 380, 690 372, 700 320 C 706 300, 660 295, 640 290"
+        fill="none" stroke="var(--road)" strokeWidth="46" strokeLinecap="round" />
+      <path d="M620 760 C 600 660, 760 640, 770 560 C 778 500, 470 500, 460 430 C 452 380, 690 372, 700 320 C 706 300, 660 295, 640 290"
+        fill="none" stroke="var(--road-line)" strokeWidth="5" strokeLinecap="round" strokeDasharray="2 26" opacity="0.8" />
+    </svg>
+  );
+}
+
+// ---------- Scene ----------
+function MapScene({ onOpen }) {
+  const { FARMS } = window.RAWDOG_DATA;
+  const scalerRef = useRef(null);
+  const [scale, setScale] = useState(1);
+
+  useEffect(() => {
+    function fit() {
+      const el = scalerRef.current;
+      if (!el) return;
+      const w = el.clientWidth;
+      const s = w / 1280;
+      setScale(s);
+    }
+    fit();
+    window.addEventListener('resize', fit);
+    return () => window.removeEventListener('resize', fit);
+  }, []);
+
+  // stars for night
+  const stars = Array.from({ length: 60 }).map((_, i) => ({
+    left: (i * 137.5) % 100, top: (i * 53.3) % 100, d: (i % 5) * 0.4,
+  }));
+  const clouds = [
+    { x: 14, y: 12, s: 1 }, { x: 64, y: 8, s: 1.3 }, { x: 40, y: 20, s: 0.8 }, { x: 86, y: 16, s: 1 },
+  ];
+
+  return (
+    <div className="map-wrap">
+      <div className="stage-scaler" ref={scalerRef} style={{ height: 760 * scale }}>
+        <div className="stage" style={{ transform: `scale(${scale})` }}>
+          {/* sky */}
+          <div className="sky" />
+          <div className="stars">
+            {stars.map((s, i) => <div className="star" key={i} style={{ left: s.left + '%', top: s.top + '%', animationDelay: s.d + 's' }} />)}
+          </div>
+          <div className="sun" />
+          {clouds.map((c, i) => (
+            <div className="cloud" key={i} style={{ left: c.x + '%', top: c.y + '%', width: 30 * c.s, height: 12 * c.s,
+              animation: `drift ${40 + i * 8}s linear infinite`, animationDelay: `${-i * 6}s` }} />
+          ))}
+          <div className="valley-headline">
+            Buy real, raw, organic ingredients from real farms with <b>$RAWDOG</b>
+          </div>
+          {/* horizon */}
+          <div className="mtns">
+            <div className="mtn-layer mtn-far" />
+            <div className="mtn-layer mtn-near" />
+          </div>
+          <div className="treeline">
+            {Array.from({ length: 44 }).map((_, i) => <div className="pine" key={i} style={{ height: 0, marginBottom: (i % 3) * 4 }} />)}
+          </div>
+
+          {/* field */}
+          <div className="field" />
+          <Road />
+
+          {/* back-row decorations */}
+          <Pine x={8} y={44} s={0.9} />
+          <Pine x={90} y={43} s={1.1} />
+          <Tree x={5} y={62} s={0.9} crown="#3f7a34" />
+          <Tree x={92} y={60} s={1} crown="#4a8a3a" />
+          <Pond x={6} y={84} w={150} h={70} />
+          <Pond x={78} y={90} w={140} h={64} />
+          <Crops x={26} y={86} rows={6} color="#cf9a3a" />
+          <Crops x={66} y={88} rows={6} color="#4a9a40" />
+          <Fence x={42} y={64} posts={3} s={0.9} />
+          <Hay x={14} y={56} />
+          <Hay x={84} y={70} />
+          <Bush x={46} y={86} />
+          <Bush x={56} y={84} crown="#4a8a3a" />
+          <Tree x={70} y={48} s={0.7} crown="#3f7a34" />
+          <Tree x={28} y={47} s={0.7} crown="#4a8a3a" />
+          {[[18, 92, '#e85d75'], [30, 94, '#f0c43a'], [70, 95, '#e85d75'], [60, 92, '#c879e0'], [88, 80, '#f0c43a'], [10, 74, '#e85d75']].map((f, i) =>
+            <Flower key={i} x={f[0]} y={f[1]} c={f[2]} />)}
+
+          {/* welcome billboard in plaza */}
+          <Billboard />
+
+          {/* stalls */}
+          {FARMS.map((f) => <Stall key={f.id} farm={f} onOpen={onOpen} />)}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+window.RAWDOG_SCENE = { MapScene, ProductArt, EggSprite };
+
+</script>
+<script type="text/babel" data-from="modals.jsx">
+/* global React, window */
+const { useState } = React;
+
+function Modal({ children, onClose, wide }) {
+  return (
+    <div className="overlay" onClick={onClose}>
+      <div className="modal panel" style={wide ? { width: 'min(560px,94vw)' } : null} onClick={(e) => e.stopPropagation()}>
+        <button className="modal-x" onClick={onClose} aria-label="close">✕</button>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function CopyField({ value, className }) {
+  const [copied, setCopied] = useState(false);
+  function copy() {
+    navigator.clipboard?.writeText(value).catch(() => {});
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1400);
+  }
+  return (
+    <div className="addr-row">
+      <div className={className || 'addr'}>{value}</div>
+      <button className="btn btn-gold btn-sm copy-btn" onClick={copy}>{copied ? 'COPIED!' : 'COPY'}</button>
+    </div>
+  );
+}
+
+// ---------- Product card ----------
+function ProductModal({ farm, onClose, onOrder }) {
+  const { ProductArt } = window.RAWDOG_SCENE;
+  const fmt = window.RAWDOG_DATA.fmt;
+  const [qty, setQty] = useState(1);
+  const total = farm.price * qty;
+  return (
+    <Modal onClose={onClose} wide>
+      <h2>{farm.farm}</h2>
+      <div className="sub">{farm.location}</div>
+      <div className="product-hero">
+        <div className="pic"><ProductArt farm={farm} big /></div>
+        <div className="meta">
+          <span className="tag">{farm.tag}</span>
+          <div className="product-desc">{farm.desc}</div>
+        </div>
+        {farm.photo && (
+          <figure className="farm-photo">
+            <img src={farm.photo} alt={farm.location} />
+            <figcaption>{farm.location}</figcaption>
+          </figure>
+        )}
+      </div>
+      <div className="price-row">
+        <div>
+          <div className="lbl">{farm.product}</div>
+          <div style={{ fontFamily: 'VT323', fontSize: 19, color: 'var(--wood)' }}>per {farm.unit}</div>
+        </div>
+        <div className="amt"><b>{fmt(farm.price)}</b> $RAWDOG</div>
+      </div>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
+        <div className="lbl" style={{ fontFamily: 'Press Start 2P', fontSize: 9, color: 'var(--wood)' }}>QUANTITY</div>
+        <div className="stepper">
+          <button onClick={() => setQty((q) => Math.max(1, q - 1))}>−</button>
+          <div className="qty">{qty}</div>
+          <button onClick={() => setQty((q) => Math.min(99, q + 1))}>+</button>
+        </div>
+      </div>
+      <div className="total-row">
+        <div className="lbl">TOTAL</div>
+        <div className="val">{fmt(total)} $RAWDOG</div>
+      </div>
+      <div className="btn-row">
+        <button className="btn btn-ghost" onClick={onClose}>BACK</button>
+        <button className="btn btn-green" onClick={() => onOrder(farm, qty)}>ORDER NOW ▸</button>
+      </div>
+    </Modal>
+  );
+}
+
+// ---------- Order / deposit flow ----------
+function OrderModal({ farm, qty: initialQty, onClose }) {
+  const { DEPOSIT_WALLET, ProductArt, fmt } = { ...window.RAWDOG_DATA, ...window.RAWDOG_SCENE };
+  const [step, setStep] = useState(1);
+  const [qty, setQty] = useState(initialQty);
+  const [form, setForm] = useState({ email: '', wallet: '', name: '', address: '', fulfillment: 'ship', notes: '' });
+  const [errs, setErrs] = useState({});
+  const total = farm.price * qty;
+  const orderId = 'RD-' + Math.random().toString(36).slice(2, 7).toUpperCase();
+
+  function set(k, v) { setForm((f) => ({ ...f, [k]: v })); }
+
+  function validate() {
+    const e = {};
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = 'Enter a valid email';
+    if (form.wallet.trim().length < 25) e.wallet = 'Paste the wallet you sent from';
+    if (!form.name.trim()) e.name = 'Required';
+    if (form.fulfillment === 'ship' && form.address.trim().length < 6) e.address = 'Enter a delivery address';
+    setErrs(e);
+    return Object.keys(e).length === 0;
+  }
+
+  return (
+    <Modal onClose={onClose} wide>
+      <h2>{step < 3 ? 'Place Your Order' : 'Order Received'}</h2>
+      <div className="sub">{farm.product} · {farm.farm}</div>
+      <div className="steps">
+        <div className={'s ' + (step >= 1 ? 'on' : '')} />
+        <div className={'s ' + (step >= 2 ? 'on' : '')} />
+        <div className={'s ' + (step >= 3 ? 'on' : '')} />
+      </div>
+
+      {step === 1 && (
+        <div>
+          <div className="deposit">
+            <span className="lbl">STEP 1 — SEND PAYMENT</span>
+            <div style={{ fontFamily: 'VT323', fontSize: 22, marginBottom: 10, color: 'var(--ink-soft)' }}>
+              Send exactly <b style={{ color: 'var(--gold-dark)' }}>{fmt(total)} $RAWDOG</b> to the farm wallet below:
+            </div>
+            <CopyField value={DEPOSIT_WALLET} />
+            <div className="warn">⚠ <b>Placeholder address</b> — the live deposit wallet drops at launch. Don't send real funds yet.</div>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+            <div className="lbl" style={{ fontFamily: 'Press Start 2P', fontSize: 9, color: 'var(--wood)' }}>QUANTITY</div>
+            <div className="stepper">
+              <button onClick={() => setQty((q) => Math.max(1, q - 1))}>−</button>
+              <div className="qty">{qty}</div>
+              <button onClick={() => setQty((q) => Math.min(99, q + 1))}>+</button>
+            </div>
+          </div>
+          <div className="btn-row">
+            <button className="btn btn-ghost" onClick={onClose}>CANCEL</button>
+            <button className="btn btn-green" onClick={() => setStep(2)}>I'VE SENT IT ▸</button>
+          </div>
+        </div>
+      )}
+
+      {step === 2 && (
+        <div>
+          <p style={{ fontFamily: 'VT323', fontSize: 21, color: 'var(--wood)', marginBottom: 14 }}>
+            Step 2 — tell us where to send your goods and which wallet you paid from, so we can match your deposit.
+          </p>
+          <div className="field-group">
+            <label>EMAIL <span className="req">*</span></label>
+            <input className={'input' + (errs.email ? ' bad' : '')} type="email" placeholder="you@example.com"
+              value={form.email} onChange={(e) => set('email', e.target.value)} />
+            {errs.email && <div className="err">{errs.email}</div>}
+          </div>
+          <div className="field-group">
+            <label>WALLET YOU SENT FROM <span className="req">*</span></label>
+            <input className={'input' + (errs.wallet ? ' bad' : '')} placeholder="Your Solana address"
+              value={form.wallet} onChange={(e) => set('wallet', e.target.value)} />
+            {errs.wallet && <div className="err">{errs.wallet}</div>}
+          </div>
+          <div className="two-col">
+            <div className="field-group">
+              <label>FULL NAME <span className="req">*</span></label>
+              <input className={'input' + (errs.name ? ' bad' : '')} placeholder="Raw Dogger"
+                value={form.name} onChange={(e) => set('name', e.target.value)} />
+              {errs.name && <div className="err">{errs.name}</div>}
+            </div>
+            <div className="field-group">
+              <label>FULFILLMENT</label>
+              <select className="input" value={form.fulfillment} onChange={(e) => set('fulfillment', e.target.value)}>
+                <option value="ship">Ship to me</option>
+                <option value="pickup">Local farm pickup</option>
+              </select>
+            </div>
+          </div>
+          {form.fulfillment === 'ship' && (
+            <div className="field-group">
+              <label>DELIVERY ADDRESS <span className="req">*</span></label>
+              <textarea className={'textarea' + (errs.address ? ' bad' : '')} placeholder="Street, city, state, zip"
+                value={form.address} onChange={(e) => set('address', e.target.value)} />
+              {errs.address && <div className="err">{errs.address}</div>}
+            </div>
+          )}
+          <div className="field-group">
+            <label>NOTES <span style={{ color: 'var(--wood)' }}>(optional)</span></label>
+            <textarea className="textarea" placeholder="Allergies, delivery window, hello from the pack…"
+              value={form.notes} onChange={(e) => set('notes', e.target.value)} />
+          </div>
+          <div className="summary">
+            <div className="line"><span>{farm.product} × {qty}</span><span>{fmt(total)} $RAWDOG</span></div>
+            <div className="line tot"><span>TOTAL</span><b>{fmt(total)}</b></div>
+          </div>
+          <div className="btn-row">
+            <button className="btn btn-ghost" onClick={() => setStep(1)}>◂ BACK</button>
+            <button className="btn btn-green" onClick={() => validate() && setStep(3)}>SUBMIT ORDER</button>
+          </div>
+        </div>
+      )}
+
+      {step === 3 && (
+        <div className="confirm">
+          <div className="coinpop">🪙</div>
+          <div className="big">YOU'RE IN THE PACK!</div>
+          <p style={{ fontFamily: 'VT323', fontSize: 21, color: 'var(--ink-soft)', lineHeight: 1.3, maxWidth: 380, margin: '0 auto' }}>
+            We'll verify your <b>{fmt(total)} $RAWDOG</b> deposit on-chain and email <b>{form.email}</b> once
+            {form.fulfillment === 'ship' ? ' your ' : ' your pickup for '} {qty}× {farm.product} from {farm.farm} is confirmed.
+          </p>
+          <div className="order-id">ORDER {orderId}</div>
+          <div className="summary" style={{ textAlign: 'left', marginTop: 14 }}>
+            <div className="line"><span>Item</span><span>{farm.product} × {qty}</span></div>
+            <div className="line"><span>Farm</span><span>{farm.farm}</span></div>
+            <div className="line"><span>Paid from</span><span style={{ fontSize: 15 }}>{form.wallet.slice(0, 10)}…</span></div>
+            <div className="line tot"><span>TOTAL</span><b>{fmt(total)}</b></div>
+          </div>
+          <button className="btn btn-gold" style={{ marginTop: 16, width: '100%' }} onClick={onClose}>BACK TO THE VALLEY</button>
+        </div>
+      )}
+    </Modal>
+  );
+}
+
+window.RAWDOG_MODALS = { ProductModal, OrderModal, Modal, CopyField };
+
+</script>
+<script type="text/babel" data-from="tabs.jsx">
+/* global React, window */
+
+// ---------- Meme Gallery ----------
+function GalleryTab() {
+  // span: 1 | 2 | 'full'  ·  ar = true aspect ratio so cover shows the whole image
+  const memes = [
+    { src: 'assets/hero.jpg', cap: 'FEED RAW. LIVE STRONG.', span: 2, ar: '3 / 2' },
+    { src: 'assets/mascot.png', cap: 'HE LIFTS. RAW ONLY.', span: 1, ar: '1 / 1' },
+    { src: 'assets/memes/raw-comic.jpg', cap: 'STRONG DOGS EAT RAW.', span: 2, ar: '1280 / 1024' },
+    { src: 'assets/memes/poster-pack.jpg', cap: 'CHOOSE YOUR PATH.', span: 2, ar: '1280 / 1024' },
+    { src: 'assets/banner.png', cap: 'THE FULL RAW MENU.', span: 'full', ar: '1280 / 426' },
+  ];
+  const spanCss = (s) => (s === 'full' ? '1 / -1' : s === 2 ? 'span 2' : 'auto');
+  return (
+    <div className="tab-page">
+      <div className="tab-head">
+        <h1>MEME VAULT</h1>
+        <p>Pixel propaganda from the pack. Right-click, save, post, repeat.</p>
+      </div>
+      <div className="gallery-grid">
+        {memes.map((m, i) => (
+          <div className="frame" key={i} style={{ gridColumn: spanCss(m.span) }}>
+            <div className="img" style={{ aspectRatio: m.ar }}><img src={m.src} alt={m.cap} /></div>
+            <div className="cap">{m.cap}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ---------- How To Buy ----------
+function HowToBuyTab() {
+  const { CONTRACT_ADDR, PUMP_URL } = window.RAWDOG_DATA;
+  const { CopyField } = window.RAWDOG_MODALS;
+  const steps = [
+    { t: 'GET A SOLANA WALLET', b: <>Install <a href="#" onClick={(e) => e.preventDefault()}>Phantom</a> or Solflare on your phone or browser. Guard your seed phrase like raw liver — never share it.</> },
+    { t: 'FUND IT WITH SOL', b: <>Buy SOL on any exchange and send it to your wallet address. A little goes a long way; keep some spare for gas.</> },
+    { t: 'OPEN PUMP.FUN', b: <>Head to pump.fun and paste the official $RAWDOG contract address below. Always double-check it matches — beware of imposters.</> },
+    { t: 'SWAP SOL → $RAWDOG', b: <>Enter how much SOL to spend, confirm the swap, and the muscle hits your wallet. Welcome to the pack.</> },
+    { t: 'SPEND IT AT THE FARMS', b: <>Head back to the Farm Map, pick a stall, and trade $RAWDOG for real organic goods from local farms. Eat raw. Live strong.</> },
+  ];
+  return (
+    <div className="tab-page">
+      <div className="tab-head">
+        <h1>HOW TO BUY</h1>
+        <p>Five-step quest from zero to fully raw-fueled.</p>
+      </div>
+      <div className="quest-list">
+        {steps.map((s, i) => (
+          <div className="quest panel" key={i}>
+            <div className="num">{i + 1}</div>
+            <div className="qbody">
+              <h3>{s.t}</h3>
+              <p>{s.b}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="ca-box panel">
+        <div className="lbl">$RAWDOG CONTRACT ADDRESS</div>
+        <div className="ca">{CONTRACT_ADDR}</div>
+        <div className="pump">
+          <a className="btn btn-green" href={PUMP_URL} onClick={(e) => PUMP_URL === '#' && e.preventDefault()}>BUY ON PUMP.FUN ▸</a>
+        </div>
+        <p style={{ fontFamily: 'VT323', fontSize: 18, color: 'var(--wood)', marginTop: 12 }}>
+          Token not launched yet — address goes live on launch day. Follow <a href="https://x.com/RawDogFun" target="_blank" rel="noreferrer" style={{ color: 'var(--gold-dark)' }}>@RawDogFun</a> for the drop.
+        </p>
+      </div>
+
+      <div className="stat-strip">
+        <div className="stat"><span className="heart">♥</span> STRENGTH
+          <span className="bar">{Array.from({ length: 8 }).map((_, i) => <i key={i} className={i < 7 ? 'on-r' : ''} />)}</span></div>
+        <div className="stat">ENERGY
+          <span className="bar">{Array.from({ length: 8 }).map((_, i) => <i key={i} className={i < 6 ? 'on-g' : ''} />)}</span></div>
+        <div className="stat">HEALTH
+          <span className="bar">{Array.from({ length: 8 }).map((_, i) => <i key={i} className={i < 8 ? 'on-h' : ''} />)}</span></div>
+      </div>
+    </div>
+  );
+}
+
+window.RAWDOG_TABS = { GalleryTab, HowToBuyTab };
+
+</script>
+<script type="text/babel" data-from="app.jsx">
+/* global React, ReactDOM, window */
+const { useState, useEffect } = React;
+
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "theme": "golden",
+  "ticker": "$RAWDOG"
+}/*EDITMODE-END*/;
+
+function XIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.9 2H22l-7.6 8.7L23 22h-6.8l-5-6.5L5.4 22H2.3l8-9.3L1.6 2h6.9l4.5 6 5.9-6Zm-1.2 18h1.9L7.2 4H5.2l12.5 16Z" /></svg>
+  );
+}
+
+function TopBar({ tab, setTab, ticker }) {
+  const { X_URL } = window.RAWDOG_DATA;
+  const tabs = [['map', 'FARM MAP'], ['gallery', 'MEME VAULT'], ['buy', 'HOW TO BUY']];
+  return (
+    <header className="topbar">
+      <div className="brand">
+        <img className="brand-head" src="assets/sprites/doghead.png" alt="" />
+        <div className="brand-name">RAW<span className="x">DOG</span></div>
+      </div>
+      <nav className="nav">
+        {tabs.map(([id, label]) => (
+          <button key={id} className={'nav-tab' + (tab === id ? ' active' : '')} onClick={() => setTab(id)}>{label}</button>
+        ))}
+      </nav>
+      <div className="topbar-spacer" />
+      <div className="topbar-right">
+        <div className="ticker-pill"><span className="dot" />{ticker}</div>
+        <a className="x-link" href={X_URL} target="_blank" rel="noreferrer" aria-label="X / Twitter"><XIcon /></a>
+        <button className="btn btn-gold btn-sm" onClick={() => setTab('buy')} style={{ whiteSpace: 'nowrap' }}>BUY ▸</button>
+      </div>
+    </header>
+  );
+}
+
+function App() {
+  const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
+  const [tab, setTab] = useState('map');
+  const [productFarm, setProductFarm] = useState(null);   // ProductModal
+  const [order, setOrder] = useState(null);               // {farm, qty} OrderModal
+
+  const { MapScene } = window.RAWDOG_SCENE;
+  const { GalleryTab, HowToBuyTab } = window.RAWDOG_TABS;
+  const { ProductModal, OrderModal } = window.RAWDOG_MODALS;
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', t.theme || 'golden');
+  }, [t.theme]);
+
+  return (
+    <div className="shell">
+      <TopBar tab={tab} setTab={setTab} ticker={t.ticker} />
+
+      <main className="page">
+        {tab === 'map' && (
+          <>
+            <MapScene onOpen={(f) => setProductFarm(f)} />
+            <div className="map-foot">
+              <span><span className="coin" /> Walk the valley — <b>click any stall</b> to trade <b>$RAWDOG</b> for real organic goods from local farms.</span>
+            </div>
+          </>
+        )}
+        {tab === 'gallery' && <GalleryTab />}
+        {tab === 'buy' && <HowToBuyTab />}
+      </main>
+
+      {productFarm && (
+        <ProductModal
+          farm={productFarm}
+          onClose={() => setProductFarm(null)}
+          onOrder={(farm, qty) => { setProductFarm(null); setOrder({ farm, qty }); }}
+        />
+      )}
+      {order && (
+        <OrderModal farm={order.farm} qty={order.qty} onClose={() => setOrder(null)} />
+      )}
+
+      <TweaksPanel>
+        <TweakSection label="World" />
+        <TweakRadio label="Time of day" value={t.theme}
+          options={[{ value: 'golden', label: 'Golden' }, { value: 'meadow', label: 'Day' }, { value: 'night', label: 'Night' }]}
+          onChange={(v) => setTweak('theme', v)} />
+        <TweakSection label="Brand" />
+        <TweakText label="Ticker" value={t.ticker} onChange={(v) => setTweak('ticker', v)} />
+      </TweaksPanel>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+
+</script>
+</body>
+</html>
